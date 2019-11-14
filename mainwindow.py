@@ -1,4 +1,5 @@
 import sys
+import qdarkstyle
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
 from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QPixmap
@@ -97,6 +98,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     window = MainWindow()
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     window.show()
 
     sys.exit(app.exec_())
