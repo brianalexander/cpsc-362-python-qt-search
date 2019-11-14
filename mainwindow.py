@@ -6,6 +6,7 @@ from ui_mainwindow import Ui_MainWindow
 from searchworker import SearchWorker
 from filecontentview import FileContentView
 
+import docx2txt
 
 class MainWindow(QMainWindow):
 
@@ -68,11 +69,16 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(QTreeWidgetItem, int)
     def itemSelected(self, item, column):
-        f = QFile(item.text(6))
-        f.open(QFile.ReadOnly | QFile.Text)
-        fileContentString = f.readAll().data().decode('utf8', errors='ignore')
-        f.close()
+        f = open(item.text(6), "rb")
+        fi = QFile(item.text(6))
+        fi.open(QFile.ReadOnly | QFile.Text)
+ 
+        if(item.text(6).endswith(".cpp") | item.text(6).endswith(".txt")):
+            fileContentString = fi.readAll().data().decode('utf8', errors='ignore')
+        elif(item.text(6).endswith(".doc") | item.text(6).endswith(".docx")):
+            fileContentString = docx2txt.process(f)
 
+        f.close()
         fileContentView = FileContentView()
         fileContentView.openHighlightedDocument(
             fileContentString, self.currentQuery)
