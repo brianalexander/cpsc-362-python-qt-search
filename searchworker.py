@@ -1,11 +1,22 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QFile, QFileInfo, QDir, QDirIterator
 from PyQt5.QtWidgets import QTreeWidgetItem
 
-from PyPDF2 import PdfFileReader
+#.doc OR .docx -> txt
+import docx2txt
 
+#.xlsl -> txt
+import xlrd
+
+def extractTextXL(filePath, buffer):
+    wkbk = xlrd.open_workbook(filePath, on_demand = True)
+    for nsheet in range(wkbk.nsheets):
+        sheet = wkbk.sheet_by_index(nsheet)
+        for row in range(sheet.nrows):
+            for col in range(sheet.ncols):
+                if sheet.cell(row, col).value != xlrd.empty_cell.value:
+                    buffer += (sheet.cell(row, col).value + "\n")
 
 class SearchWorker(QObject):
-
     def __init__(self):
         super(SearchWorker, self).__init__()
         self.qtwItems = []
@@ -17,24 +28,32 @@ class SearchWorker(QObject):
     def startSearch(self, query):
         print("search started..", query)
         filters = QDir.Files
-        nameFilters = ["*.cpp"]
-        iterator = QDirIterator("/home/alexanderb", nameFilters,
+        nameFilters = ["*.cpp", "*.txt", "*.doc", "*.docx"]       #EXCEL 
+        iterator = QDirIterator("/Users", nameFilters,
                                 filters, QDirIterator.Subdirectories)
         while(iterator.hasNext()):
             filePath = iterator.next()
             fileInfo = QFileInfo(filePath)
             currentFile = QFile(filePath)
             currentFile.open(QFile.ReadOnly | QFile.Text)
-            fileContents = currentFile.readAll().data().decode('utf8', errors='ignore')
+            fileContents = ""
+            # fileContents = currentFile.readAll().data().decode('utf8', errors='ignore')
+            
+            if(filePath.endswith(".xlsx")):     #NOT COMPLETED
+                extractTextXL(filePath, fileContents)
+            elif(filePath.endswith(".cpp") | filePath.endswith(".txt")):    #CPP or H or TXT 
+                fileContents = currentFile.readAll().data().decode('utf8', errors='ignore')
+            elif(filePath.endswith(".doc") | filePath.endswith(".docx")):   #DOC or DOCX
+                fileContents = docx2txt.process(filePath)
+                
             if(fileContents.find(query) != -1):
                 qtwItem = QTreeWidgetItem()
                 qtwItem.setText(0, fileInfo.fileName())
                 qtwItem.setText(1, fileInfo.suffix())
                 qtwItem.setText(2, str(fileInfo.size()/1024))
-                qtwItem.setText(
-                    3, fileInfo.lastModified().toString("MM/dd/yyyy"))
+                qtwItem.setText(3, fileInfo.lastModified().toString("MM/dd/yyyy"))
                 qtwItem.setText(4, fileInfo.created().toString("MM/dd/yyyy"))
-                qtwItem.setText(5, str("...here is the content..."))
+                qtwItem.setText(5, str(fileContents[0:50]))
                 qtwItem.setText(6, filePath)
                 self.qtwItems.append(qtwItem)
 

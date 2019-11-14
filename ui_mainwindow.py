@@ -92,10 +92,10 @@ class Ui_MainWindow(object):
         self.results_search_button.setText(_translate("MainWindow", "Searching.."))
         self.results_tree_widget.headerItem().setText(0, _translate("MainWindow", "Name"))
         self.results_tree_widget.headerItem().setText(1, _translate("MainWindow", "Type"))
-        self.results_tree_widget.headerItem().setText(2, _translate("MainWindow", "Size"))
+        self.results_tree_widget.headerItem().setText(2, _translate("MainWindow", "Size (KB)"))
         self.results_tree_widget.headerItem().setText(3, _translate("MainWindow", "Last Modified"))
-        self.results_tree_widget.headerItem().setText(4, _translate("MainWindow", "Count"))
-        self.results_tree_widget.headerItem().setText(5, _translate("MainWindow", "Query Context"))
+        self.results_tree_widget.headerItem().setText(4, _translate("MainWindow", "Created"))
+        self.results_tree_widget.headerItem().setText(5, _translate("MainWindow", "File Context"))
         self.results_tree_widget.headerItem().setText(6, _translate("MainWindow", "Path"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
 
