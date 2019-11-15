@@ -7,14 +7,20 @@ import docx2txt
 #.xlsl -> txt
 import xlrd
 
-def extractTextXL(filePath, buffer):
+def extractTextXL(filePath):
+    buffer = ""
     wkbk = xlrd.open_workbook(filePath, on_demand = True)
     for nsheet in range(wkbk.nsheets):
         sheet = wkbk.sheet_by_index(nsheet)
         for row in range(sheet.nrows):
             for col in range(sheet.ncols):
                 if sheet.cell(row, col).value != xlrd.empty_cell.value:
-                    buffer += (sheet.cell(row, col).value + "\n")
+                    buffer += (sheet.cell(row, col).value)
+                buffer += "\t"
+            buffer += "\n"
+    return buffer
+
+
 
 class SearchWorker(QObject):
     def __init__(self):
@@ -28,7 +34,7 @@ class SearchWorker(QObject):
     def startSearch(self, query):
         print("search started..", query)
         filters = QDir.Files
-        nameFilters = ["*.cpp", "*.txt", "*.doc", "*.docx"]       #EXCEL 
+        nameFilters = ["*.cpp", "*.txt", "*.doc", "*.docx", "*.xlsx", "*.xls"]       #EXCEL 
         iterator = QDirIterator("/Users", nameFilters,
                                 filters, QDirIterator.Subdirectories)
         while(iterator.hasNext()):
@@ -39,9 +45,9 @@ class SearchWorker(QObject):
             fileContents = ""
             # fileContents = currentFile.readAll().data().decode('utf8', errors='ignore')
             
-            if(filePath.endswith(".xlsx")):     #NOT COMPLETED
-                extractTextXL(filePath, fileContents)
-            elif(filePath.endswith(".cpp") | filePath.endswith(".txt")):    #CPP or H or TXT 
+            if(filePath.endswith(".xlsx") | filePath.endswith(".xls")): #XLS or XLSX
+                fileContents = extractTextXL(filePath)
+            elif(filePath.endswith(".cpp") | filePath.endswith(".txt") | filePath.endswith(".h")):    #CPP or H or TXT 
                 fileContents = currentFile.readAll().data().decode('utf8', errors='ignore')
             elif(filePath.endswith(".doc") | filePath.endswith(".docx")):   #DOC or DOCX
                 fileContents = docx2txt.process(filePath)
