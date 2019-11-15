@@ -8,18 +8,19 @@ import docx2txt
 import xlrd
 
 def extractTextXL(filePath):
-    buffer = ""
+    arr = []
     wkbk = xlrd.open_workbook(filePath, on_demand = True)
     for nsheet in range(wkbk.nsheets):
         sheet = wkbk.sheet_by_index(nsheet)
         for row in range(sheet.nrows):
             for col in range(sheet.ncols):
                 if sheet.cell(row, col).value != xlrd.empty_cell.value:
-                    buffer += (sheet.cell(row, col).value)
-                buffer += "\t"
-            buffer += "\n"
-    return buffer
-
+                    arr.append(sheet.cell(row, col).value)
+                arr.append("\t")
+            arr.append("\n")
+    fileContents = ""
+    return fileContents.join(arr)
+ 
 
 
 class SearchWorker(QObject):
@@ -34,7 +35,7 @@ class SearchWorker(QObject):
     def startSearch(self, query):
         print("search started..", query)
         filters = QDir.Files
-        nameFilters = ["*.cpp", "*.txt", "*.doc", "*.docx", "*.xlsx", "*.xls"]       #EXCEL 
+        nameFilters = ["*.cpp", "*.txt", "*.doc", "*.docx", "*.xlsx", "*.xls"]
         iterator = QDirIterator("/Users", nameFilters,
                                 filters, QDirIterator.Subdirectories)
         while(iterator.hasNext()):
