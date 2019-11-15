@@ -1,4 +1,4 @@
-*.pyproject.*
+*.pyproject*
 .vscode
 *.spec
 __pycache__

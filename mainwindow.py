@@ -6,9 +6,9 @@ from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
 import qdarkstyle
 import sys
-from tika import parser
+
 import tika
-tika.initVM()
+from tika import parser
 
 
 class MainWindow(QMainWindow):
@@ -17,6 +17,8 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+
+        # dummy call to start VM on startup
 
         self.openedFiles = []
 
@@ -92,8 +94,10 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    window = MainWindow()
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    parser.from_buffer('')
+
+    window = MainWindow()
     window.show()
 
     sys.exit(app.exec_())

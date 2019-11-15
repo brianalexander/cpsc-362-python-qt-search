@@ -25,8 +25,7 @@ class SearchWorker(QObject):
 
             print("opening", filePath)
 
-            fileContents = parser.from_file(
-                filePath, requestOptions={'timeout': 5})
+            fileContents = parser.from_file(filePath)
 
             print("opened", type(filePath))
 
