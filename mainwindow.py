@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, 
 from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QPixmap
 from ui_mainwindow import Ui_MainWindow
-from searchworker import SearchWorker
+from searchworker import SearchWorker, extractTextXL
 from filecontentview import FileContentView
 
 import docx2txt
@@ -78,6 +78,8 @@ class MainWindow(QMainWindow):
             fileContentString = fi.readAll().data().decode('utf8', errors='ignore')
         elif(item.text(6).endswith(".doc") | item.text(6).endswith(".docx")):
             fileContentString = docx2txt.process(f)
+        elif(item.text(6).endswith(".xlsx") | item.text(6).endswith(".xls")):
+            fileContentString = extractTextXL(item.text(6))
 
         f.close()
         fileContentView = FileContentView()
