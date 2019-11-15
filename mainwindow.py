@@ -1,13 +1,15 @@
-import sys
-import qdarkstyle
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
-from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QPixmap
-from ui_mainwindow import Ui_MainWindow
-from searchworker import SearchWorker, extractTextXL
 from filecontentview import FileContentView
+from searchworker import SearchWorker
+from ui_mainwindow import Ui_MainWindow
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
+import qdarkstyle
+import sys
+from tika import parser
+import tika
+tika.initVM()
 
-import docx2txt
 
 class MainWindow(QMainWindow):
 
@@ -15,6 +17,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+
         self.openedFiles = []
 
         self.ui = Ui_MainWindow()
@@ -70,21 +73,11 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(QTreeWidgetItem, int)
     def itemSelected(self, item, column):
-        f = open(item.text(6), "rb")
-        fi = QFile(item.text(6))
-        fi.open(QFile.ReadOnly | QFile.Text)
- 
-        if(item.text(6).endswith(".cpp") | item.text(6).endswith(".txt")):
-            fileContentString = fi.readAll().data().decode('utf8', errors='ignore')
-        elif(item.text(6).endswith(".doc") | item.text(6).endswith(".docx")):
-            fileContentString = docx2txt.process(f)
-        elif(item.text(6).endswith(".xlsx") | item.text(6).endswith(".xls")):
-            fileContentString = extractTextXL(item.text(6))
+        fileContent = parser.from_file(item.text(6))['content'].strip()
 
-        f.close()
         fileContentView = FileContentView()
         fileContentView.openHighlightedDocument(
-            fileContentString, self.currentQuery)
+            fileContent, self.currentQuery)
         self.openedFiles.append(fileContentView)
         fileContentView.show()
 
