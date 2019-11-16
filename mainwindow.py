@@ -16,13 +16,14 @@ class MainWindow(QMainWindow):
 
     start_search = pyqtSignal(str, name='startSearch')
 
-    def __init__(self):
+    def __init__(self, application_context):
         super(MainWindow, self).__init__()
+        self.application_context = application_context
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        self.application_context.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         self.darkTheme = True
 
         self.lightIcon = QIcon(':assets/icons/light_button.png')
@@ -68,12 +69,12 @@ class MainWindow(QMainWindow):
 
     def toggleTheme(self):
         if(self.darkTheme == False):
-            self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+            self.application_context.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
             self.ui.toggle_theme_button.setIcon(self.lightIcon)
             self.darkTheme = True
         else:
             # this is the stylesheet i was planning on using: self.lightqss
-            self.setStyleSheet("")
+            self.application_context.setStyleSheet("")
             self.ui.toggle_theme_button.setIcon(self.darkIcon)
             self.darkTheme = False
 
@@ -123,7 +124,7 @@ if __name__ == "__main__":
     # dummy call to start VM on startup
     parser.from_buffer('')
 
-    window = MainWindow()
+    window = MainWindow(app)
     window.show()
 
     sys.exit(app.exec_())
