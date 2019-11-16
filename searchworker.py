@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QFile, QFileInfo, QDir, QDirIterator
 from PyQt5.QtWidgets import QTreeWidgetItem
 
-from PyPDF2 import PdfFileReader
+## from PyPDF2 import PdfFileReader
 
 
 class SearchWorker(QObject):
@@ -17,8 +17,8 @@ class SearchWorker(QObject):
     def startSearch(self, query):
         print("search started..", query)
         filters = QDir.Files
-        nameFilters = ["*.cpp"]
-        iterator = QDirIterator("/home/alexanderb", nameFilters,
+        nameFilters = ["*.cpp", "*.txt"]
+        iterator = QDirIterator("C:/Users/Brian/Documents", nameFilters,
                                 filters, QDirIterator.Subdirectories)
         while(iterator.hasNext()):
             filePath = iterator.next()

@@ -1,7 +1,8 @@
 import sys
+import qdarkstyle
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
-from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QFile, QTextStream, QThread, pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtGui import QPixmap, QIcon
 from ui_mainwindow import Ui_MainWindow
 from searchworker import SearchWorker
 from filecontentview import FileContentView
@@ -21,6 +22,12 @@ class MainWindow(QMainWindow):
         logo = QPixmap('searchy_logo.png')
         self.ui.launch_logo.setPixmap(logo)
 
+        self.lightIcon = QIcon('light_button.png')
+        self.ui.toggle_theme_button.setIcon(self.lightIcon)
+        self.ui.toggle_theme_button.setIconSize(QSize(32,32))
+
+        self.darkIcon = QIcon('dark_button.png')
+        
         self.workerThread = QThread()
         self.workerThread.start()
 
@@ -35,6 +42,13 @@ class MainWindow(QMainWindow):
         self.ui.results_search_box.returnPressed.connect(
             self.searchButtonClicked)
 
+        f = QFile("light-theme.qss")
+        f.open(QFile.ReadOnly | QFile.Text)
+        ts = QTextStream(f)
+        self.lightqss = ts.readAll()
+
+        self.ui.toggle_theme_button.clicked.connect(self.toggleTheme)
+
         self.start_search.connect(self.worker.startSearch)
         self.worker.match_found.connect(self.onMatchFound)
         self.worker.finished.connect(self.searchFinished)
@@ -43,6 +57,20 @@ class MainWindow(QMainWindow):
             self.itemSelected)
 
         self.searching = False
+        self.darkTheme = False
+
+
+    def toggleTheme(self):
+        if(self.darkTheme == False):
+            self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+            self.ui.toggle_theme_button.setIcon(self.darkIcon)
+            self.darkTheme = True
+        else:
+            self.setStyleSheet("") # this is the stylesheet i was planning on using: self.lightqss
+            self.ui.toggle_theme_button.setIcon(self.lightIcon)
+            self.darkTheme = False
+        return
+
 
     def searchButtonClicked(self):
         if(self.searching == True):

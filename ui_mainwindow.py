@@ -6,7 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-
+import sys
+import qdarkstyle
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -45,6 +46,11 @@ class Ui_MainWindow(object):
         self.launch_search_button = QtWidgets.QPushButton(self.page)
         self.launch_search_button.setObjectName("launch_search_button")
         self.horizontalLayout.addWidget(self.launch_search_button)
+
+        self.toggle_theme_button = QtWidgets.QPushButton(self.page)
+        self.toggle_theme_button.setObjectName("toggle_theme_button")
+        self.verticalLayout.addWidget(self.toggle_theme_button, alignment=QtCore.Qt.AlignRight)
+        
         self.verticalLayout_3.addLayout(self.horizontalLayout)
         self.verticalLayout_2.addLayout(self.verticalLayout_3)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -69,25 +75,28 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.page_2)
         self.verticalLayout.addWidget(self.stackedWidget)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1126, 20))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        self.toolBar = QtWidgets.QToolBar(MainWindow)
-        self.toolBar.setObjectName("toolBar")
-        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        #self.menubar = QtWidgets.QMenuBar(MainWindow)
+        #self.menubar.setGeometry(QtCore.QRect(0, 0, 1126, 20))
+        #self.menubar.setObjectName("menubar")
+        #MainWindow.setMenuBar(self.menubar)
+        #self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        #self.statusbar.setObjectName("statusbar")
+        #MainWindow.setStatusBar(self.statusbar)
+        #self.toolBar = QtWidgets.QToolBar(MainWindow)
+        #self.toolBar.setObjectName("toolBar")
+        #MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.launch_logo.setText(_translate("MainWindow", "LOGO PLACEHOLDER"))
+
+        #self.toggle_theme_button.setText(_translate("MainWindow", "Theme"))
+
         self.launch_search_button.setText(_translate("MainWindow", "Search"))
         self.results_search_button.setText(_translate("MainWindow", "Searching.."))
         self.results_tree_widget.headerItem().setText(0, _translate("MainWindow", "Name"))
@@ -97,7 +106,7 @@ class Ui_MainWindow(object):
         self.results_tree_widget.headerItem().setText(4, _translate("MainWindow", "Count"))
         self.results_tree_widget.headerItem().setText(5, _translate("MainWindow", "Query Context"))
         self.results_tree_widget.headerItem().setText(6, _translate("MainWindow", "Path"))
-        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
+        #self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
 
 
 if __name__ == "__main__":
