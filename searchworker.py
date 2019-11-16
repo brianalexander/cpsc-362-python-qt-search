@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QFile, QFileInfo, QDir, QDirIterator
 from PyQt5.QtWidgets import QTreeWidgetItem
+
 from tika import parser
 
 
@@ -15,6 +16,7 @@ class SearchWorker(QObject):
     def startSearch(self, query):
         print("search started..", query)
         filters = QDir.Files
+
         nameFilters = ["*.cpp", "*.txt", "*.docx",
                         "*.xlsx", "*.xls", ".ppt", ".pptx", ".pdf"]  # EXCEL
         iterator = QDirIterator("/", nameFilters,

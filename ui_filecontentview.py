@@ -6,7 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-
+import sys
+import qdarkstyle
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -22,6 +23,7 @@ class Ui_FileContentView(object):
 
         self.retranslateUi(FileContentView)
         QtCore.QMetaObject.connectSlotsByName(FileContentView)
+        FileContentView.show()
 
     def retranslateUi(self, FileContentView):
         _translate = QtCore.QCoreApplication.translate
@@ -34,5 +36,4 @@ if __name__ == "__main__":
     FileContentView = QtWidgets.QWidget()
     ui = Ui_FileContentView()
     ui.setupUi(FileContentView)
-    FileContentView.show()
     sys.exit(app.exec_())
