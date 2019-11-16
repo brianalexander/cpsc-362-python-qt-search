@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>assets/images/searchy_logo.png</file>
+    <file>assets/icons/dark_button.png</file>
+    <file>assets/icons/light_button.png</file>
+    <file>assets/css/light-theme.qss</file>
+</qresource>
+</RCC>

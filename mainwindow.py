@@ -6,6 +6,7 @@ from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot, QSize, QTextStrea
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
 import qdarkstyle
 import sys
+import resources
 
 import tika
 from tika import parser
@@ -24,15 +25,15 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         self.darkTheme = True
 
-        self.lightIcon = QIcon('light_button.png')
-        self.darkIcon = QIcon('dark_button.png')
+        self.lightIcon = QIcon(':assets/icons/light_button.png')
+        self.darkIcon = QIcon(':assets/icons/dark_button.png')
 
         self.ui.toggle_theme_button.setIcon(self.lightIcon)
         self.ui.toggle_theme_button.setIconSize(QSize(32, 32))
 
         self.openedFiles = []
 
-        logo = QPixmap('searchy_logo.png')
+        logo = QPixmap(':/assets/images/searchy_logo.png')
         self.ui.launch_logo.setPixmap(logo)
 
         self.workerThread = QThread()
