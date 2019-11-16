@@ -1,8 +1,8 @@
 from filecontentview import FileContentView
 from searchworker import SearchWorker
 from ui_mainwindow import Ui_MainWindow
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot, QSize, QTextStream
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
 import qdarkstyle
 import sys
@@ -18,22 +18,23 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        # dummy call to start VM on startup
-
-        self.openedFiles = []
-
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        self.darkTheme = True
+
+        self.lightIcon = QIcon('light_button.png')
+        self.darkIcon = QIcon('dark_button.png')
+
+        self.ui.toggle_theme_button.setIcon(self.lightIcon)
+        self.ui.toggle_theme_button.setIconSize(QSize(32, 32))
+
+        self.openedFiles = []
 
         logo = QPixmap('searchy_logo.png')
         self.ui.launch_logo.setPixmap(logo)
 
-        self.lightIcon = QIcon('light_button.png')
-        self.ui.toggle_theme_button.setIcon(self.lightIcon)
-        self.ui.toggle_theme_button.setIconSize(QSize(32,32))
-
-        self.darkIcon = QIcon('dark_button.png')
-        
         self.workerThread = QThread()
         self.workerThread.start()
 
@@ -48,10 +49,10 @@ class MainWindow(QMainWindow):
         self.ui.results_search_box.returnPressed.connect(
             self.searchButtonClicked)
 
-        f = QFile("light-theme.qss")
-        f.open(QFile.ReadOnly | QFile.Text)
-        ts = QTextStream(f)
-        self.lightqss = ts.readAll()
+        # f = QFile("light-theme.qss")
+        # f.open(QFile.ReadOnly | QFile.Text)
+        # ts = QTextStream(f)
+        # self.lightqss = ts.readAll()
 
         self.ui.toggle_theme_button.clicked.connect(self.toggleTheme)
 
@@ -63,20 +64,17 @@ class MainWindow(QMainWindow):
             self.itemSelected)
 
         self.searching = False
-        self.darkTheme = False
-
 
     def toggleTheme(self):
         if(self.darkTheme == False):
             self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
-            self.ui.toggle_theme_button.setIcon(self.darkIcon)
+            self.ui.toggle_theme_button.setIcon(self.lightIcon)
             self.darkTheme = True
         else:
-            self.setStyleSheet("") # this is the stylesheet i was planning on using: self.lightqss
-            self.ui.toggle_theme_button.setIcon(self.lightIcon)
+            # this is the stylesheet i was planning on using: self.lightqss
+            self.setStyleSheet("")
+            self.ui.toggle_theme_button.setIcon(self.darkIcon)
             self.darkTheme = False
-        return
-
 
     def searchButtonClicked(self):
         if(self.searching == True):
@@ -121,7 +119,7 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    # dummy call to start VM on startup
     parser.from_buffer('')
 
     window = MainWindow()
