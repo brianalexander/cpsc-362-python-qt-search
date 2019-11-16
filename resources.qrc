@@ -4,5 +4,6 @@
     <file>assets/icons/dark_button.png</file>
     <file>assets/icons/light_button.png</file>
     <file>assets/css/light-theme.qss</file>
+    <file>assets/tika/tika-server.jar</file>
 </qresource>
 </RCC>

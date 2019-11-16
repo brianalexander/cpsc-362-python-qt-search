@@ -1,0 +1,64 @@
+Nov 16, 2019 11:18:34 AM org.apache.tika.config.InitializableProblemHandler$3 handleInitializableProblem
+WARNING: J2KImageReader not loaded. JPEG2000 files will not be processed.
+See https://pdfbox.apache.org/2.0/dependencies.html#jai-image-io
+for optional dependencies.
+
+Nov 16, 2019 11:18:34 AM org.apache.tika.config.InitializableProblemHandler$3 handleInitializableProblem
+WARNING: Tesseract OCR is installed and will be automatically applied to image files unless
+you've excluded the TesseractOCRParser from the default parser.
+Tesseract may dramatically slow down content extraction (TIKA-2359).
+As of Tika 1.15 (and prior versions), Tesseract is automatically called.
+In future versions of Tika, users may need to turn the TesseractOCRParser on via TikaConfig.
+Nov 16, 2019 11:18:34 AM org.apache.tika.config.InitializableProblemHandler$3 handleInitializableProblem
+WARNING: org.xerial's sqlite-jdbc is not loaded.
+Please provide the jar on your classpath to parse sqlite files.
+See tika-parsers/pom.xml for the correct version.
+INFO  Starting Apache Tika 1.19 server
+INFO  Setting the server's publish address to be http://localhost:9998/
+INFO  Logging initialized @974ms to org.eclipse.jetty.util.log.Slf4jLog
+INFO  jetty-9.4.z-SNAPSHOT; built: 2018-06-05T18:24:03.829Z; git: d5fc0523cfa96bfebfbda19606cad384d772f04c; jvm 11.0.4+11-post-Ubuntu-1ubuntu218.04.3
+INFO  Started ServerConnector@2445445a{HTTP/1.1,[http/1.1]}{localhost:9998}
+INFO  Started @1023ms
+WARN  Empty contextPath
+INFO  Started o.e.j.s.h.ContextHandler@2da59753{/,null,AVAILABLE}
+INFO  Started Apache Tika server at http://localhost:9998/
+INFO  rmeta/text (autodetecting type)
+WARN  rmeta/text: Text extraction failed
+org.apache.tika.exception.ZeroByteFileException: InputStream must have > 0 bytes
+	at org.apache.tika.parser.AutoDetectParser.parse(AutoDetectParser.java:122)
+	at org.apache.tika.parser.RecursiveParserWrapper.parse(RecursiveParserWrapper.java:222)
+	at org.apache.tika.server.resource.TikaResource.parse(TikaResource.java:402)
+	at org.apache.tika.server.resource.RecursiveMetadataResource.parseMetadata(RecursiveMetadataResource.java:144)
+	at org.apache.tika.server.resource.RecursiveMetadataResource.getMetadata(RecursiveMetadataResource.java:121)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:179)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:96)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:193)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:103)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:59)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:96)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:308)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:121)
+	at org.apache.cxf.transport.http.AbstractHTTPDestination.invoke(AbstractHTTPDestination.java:267)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:247)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:79)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:132)
+	at org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:257)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1317)
+	at org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:205)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1219)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:144)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:219)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:132)
+	at org.eclipse.jetty.server.Server.handle(Server.java:531)
+	at org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:352)
+	at org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:260)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:281)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:102)
+	at org.eclipse.jetty.io.ChannelEndPoint$2.run(ChannelEndPoint.java:118)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:762)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$2.run(QueuedThreadPool.java:680)
+	at java.base/java.lang.Thread.run(Thread.java:834)

@@ -1,0 +1,9 @@
+2019-11-16 11:11:34,558 [MainThread  ] [INFO ]  Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.19/tika-server-1.19.jar to /tmp/tika-server.jar.
+2019-11-16 11:12:02,365 [MainThread  ] [WARNI]  Failed to see startup log message; retrying...
+2019-11-16 11:17:47,707 [MainThread  ] [WARNI]  Tika server returned status: 422
+2019-11-16 11:18:34,143 [MainThread  ] [WARNI]  Failed to see startup log message; retrying...
+2019-11-16 11:18:43,753 [MainThread  ] [WARNI]  Tika server returned status: 422
+2019-11-16 11:21:37,282 [MainThread  ] [INFO ]  Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.19/tika-server-1.19.jar to /tmp/tika-server.jar.
+2019-11-16 11:22:26,525 [MainThread  ] [INFO ]  Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.19/tika-server-1.19.jar.md5 to /tmp/tika-server.jar.md5.
+2019-11-16 11:22:26,698 [MainThread  ] [INFO ]  Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.19/tika-server-1.19.jar to /tmp/tika-server.jar.
+2019-11-16 11:22:51,479 [MainThread  ] [INFO ]  Retrieving http://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.19/tika-server-1.19.jar to /tmp/tika-server.jar.

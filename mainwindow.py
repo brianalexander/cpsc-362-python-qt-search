@@ -4,12 +4,10 @@ from ui_mainwindow import Ui_MainWindow
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot, QSize, QTextStream
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
+import os
+import resources
 import qdarkstyle
 import sys
-import resources
-
-import tika
-from tika import parser
 
 
 class MainWindow(QMainWindow):
@@ -23,7 +21,8 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.application_context.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        self.application_context.setStyleSheet(
+            qdarkstyle.load_stylesheet_pyqt5())
         self.darkTheme = True
 
         self.lightIcon = QIcon(':assets/icons/light_button.png')
@@ -69,7 +68,8 @@ class MainWindow(QMainWindow):
 
     def toggleTheme(self):
         if(self.darkTheme == False):
-            self.application_context.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+            self.application_context.setStyleSheet(
+                qdarkstyle.load_stylesheet_pyqt5())
             self.ui.toggle_theme_button.setIcon(self.lightIcon)
             self.darkTheme = True
         else:
@@ -119,6 +119,9 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    import tika
+    from tika import parser
+
     app = QApplication(sys.argv)
 
     # dummy call to start VM on startup
