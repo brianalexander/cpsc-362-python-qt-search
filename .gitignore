@@ -1,2 +1,6 @@
+*.pyproject*
 .vscode
+*.spec
 __pycache__
+build
+dist

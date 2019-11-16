@@ -1,11 +1,14 @@
-import sys
-import qdarkstyle
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
-from PyQt5.QtCore import QFile, QTextStream, QThread, pyqtSignal, pyqtSlot, QSize
-from PyQt5.QtGui import QPixmap, QIcon
-from ui_mainwindow import Ui_MainWindow
-from searchworker import SearchWorker
 from filecontentview import FileContentView
+from searchworker import SearchWorker
+from ui_mainwindow import Ui_MainWindow
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
+import qdarkstyle
+import sys
+
+import tika
+from tika import parser
 
 
 class MainWindow(QMainWindow):
@@ -14,6 +17,9 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+
+        # dummy call to start VM on startup
+
         self.openedFiles = []
 
         self.ui = Ui_MainWindow()
@@ -96,14 +102,11 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(QTreeWidgetItem, int)
     def itemSelected(self, item, column):
-        f = QFile(item.text(6))
-        f.open(QFile.ReadOnly | QFile.Text)
-        fileContentString = f.readAll().data().decode('utf8', errors='ignore')
-        f.close()
+        fileContent = parser.from_file(item.text(6))['content'].strip()
 
         fileContentView = FileContentView()
         fileContentView.openHighlightedDocument(
-            fileContentString, self.currentQuery)
+            fileContent, self.currentQuery)
         self.openedFiles.append(fileContentView)
         fileContentView.show()
 
@@ -117,6 +120,9 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    parser.from_buffer('')
 
     window = MainWindow()
     window.show()
