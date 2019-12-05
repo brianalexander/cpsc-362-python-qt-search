@@ -30,25 +30,24 @@ class SearchWorker(QObject):
                 print("opening", filePath)
 
                 fileContents = parser.from_file(filePath)
+                if(fileContents['status'] == 200):
+                    print("opened", type(filePath))
+                    if(fileContents['content'].find(query) != -1):
 
-                print("opened", type(filePath))
+                        qtwItem = QTreeWidgetItem()
+                        qtwItem.setText(0, fileInfo.fileName())
+                        qtwItem.setText(1, fileInfo.suffix())
+                        qtwItem.setText(2, str(fileInfo.size()/1024))
+                        qtwItem.setText(
+                            3, fileInfo.lastModified().toString("MM/dd/yyyy"))
+                        qtwItem.setText(
+                            4, fileInfo.created().toString("MM/dd/yyyy"))
+                        qtwItem.setText(
+                            5, str(fileContents['content'].strip())[0:10])
+                        qtwItem.setText(6, filePath)
+                        self.qtwItems.append(qtwItem)
 
-                if(fileContents['content'] != None and fileContents['content'].find(query) != -1):
-
-                    qtwItem = QTreeWidgetItem()
-                    qtwItem.setText(0, fileInfo.fileName())
-                    qtwItem.setText(1, fileInfo.suffix())
-                    qtwItem.setText(2, str(fileInfo.size()/1024))
-                    qtwItem.setText(
-                        3, fileInfo.lastModified().toString("MM/dd/yyyy"))
-                    qtwItem.setText(
-                        4, fileInfo.created().toString("MM/dd/yyyy"))
-                    qtwItem.setText(
-                        5, str(fileContents['content'].strip())[0:10])
-                    qtwItem.setText(6, filePath)
-                    self.qtwItems.append(qtwItem)
-
-                    self.match_found.emit(qtwItem)
+                        self.match_found.emit(qtwItem)
         print('finished')
 
         self.finished.emit()
