@@ -13,6 +13,7 @@ import sys
 class MainWindow(QMainWindow):
 
     start_search = pyqtSignal(str, name='startSearch')
+    stop_search = pyqtSignal()
 
     def __init__(self, application_context):
         super(MainWindow, self).__init__()
@@ -21,14 +22,14 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.application_context.setStyleSheet(
-            qdarkstyle.load_stylesheet_pyqt5())
-        self.darkTheme = True
+        # self.application_context.setStyleSheet(
+        #     qdarkstyle.load_stylesheet_pyqt5())
+        self.darkTheme = False
 
         self.lightIcon = QIcon(':assets/icons/light_button.png')
         self.darkIcon = QIcon(':assets/icons/dark_button.png')
 
-        self.ui.toggle_theme_button.setIcon(self.lightIcon)
+        self.ui.toggle_theme_button.setIcon(self.darkIcon)
         self.ui.toggle_theme_button.setIconSize(QSize(32, 32))
 
         self.openedFiles = []
@@ -52,7 +53,8 @@ class MainWindow(QMainWindow):
 
         self.ui.toggle_theme_button.clicked.connect(self.toggleTheme)
 
-        self.start_search.connect(self.worker.startSearch)
+        self.start_search.connect(self.worker.start_search)
+        self.stop_search.connect(self.worker.stop_search)
         self.worker.match_found.connect(self.onMatchFound)
         self.worker.finished.connect(self.searchFinished)
 
@@ -68,28 +70,31 @@ class MainWindow(QMainWindow):
             self.ui.toggle_theme_button.setIcon(self.lightIcon)
             self.darkTheme = True
         else:
-            # this is the stylesheet i was planning on using: self.lightqss
             self.application_context.setStyleSheet("")
             self.ui.toggle_theme_button.setIcon(self.darkIcon)
             self.darkTheme = False
 
     def searchButtonClicked(self):
-        if(self.searching == True):
-            return
+        if (self.searching == True):
+            print('emitting stop_search')
+            self.stop_search.emit()
+            self.searching = False
+            self.ui.results_search_button.setText('Search')
 
-        self.searching = True
-
-        if(self.ui.stackedWidget.currentIndex() == 1):
-            self.ui.results_tree_widget.clear()
-            self.currentQuery = self.ui.results_search_box.text()
-            self.ui.results_search_button.setText('Searching..')
         else:
-            self.ui.results_search_box.setText(
-                self.ui.launch_search_box.text())
-            self.currentQuery = self.ui.launch_search_box.text()
-            self.ui.stackedWidget.setCurrentIndex(1)
+            self.searching = True
 
-        self.start_search.emit(self.currentQuery)
+            if(self.ui.stackedWidget.currentIndex() == 1):
+                self.ui.results_tree_widget.clear()
+                self.currentQuery = self.ui.results_search_box.text()
+                self.ui.results_search_button.setText('Searching..')
+            else:
+                self.ui.results_search_box.setText(
+                    self.ui.launch_search_box.text())
+                self.currentQuery = self.ui.launch_search_box.text()
+                self.ui.stackedWidget.setCurrentIndex(1)
+
+            self.start_search.emit(self.currentQuery)
 
     @pyqtSlot(QTreeWidgetItem)
     def onMatchFound(self, qtwItem):

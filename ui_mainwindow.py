@@ -76,17 +76,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.stackedWidget)
         MainWindow.setCentralWidget(self.centralwidget)
 
-        # self.menubar = QtWidgets.QMenuBar(MainWindow)
-        # self.menubar.setGeometry(QtCore.QRect(0, 0, 1126, 20))
-        # self.menubar.setObjectName("menubar")
-        # MainWindow.setMenuBar(self.menubar)
-        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        # self.statusbar.setObjectName("statusbar")
-        # MainWindow.setStatusBar(self.statusbar)
-        # self.toolBar = QtWidgets.QToolBar(MainWindow)
-        # self.toolBar.setObjectName("toolBar")
-        # MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
-
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -95,8 +84,6 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.launch_logo.setText(_translate("MainWindow", "LOGO PLACEHOLDER"))
-
-        #self.toggle_theme_button.setText(_translate("MainWindow", "Theme"))
 
         self.launch_search_button.setText(_translate("MainWindow", "Search"))
         self.results_search_button.setText(_translate("MainWindow", "Searching.."))
@@ -107,7 +94,6 @@ class Ui_MainWindow(object):
         self.results_tree_widget.headerItem().setText(4, _translate("MainWindow", "Created"))
         self.results_tree_widget.headerItem().setText(5, _translate("MainWindow", "File Context"))
         self.results_tree_widget.headerItem().setText(6, _translate("MainWindow", "Path"))
-        # self.toolBar.setWindowTitle(_translate("Searchy", "toolBar"))
 
 
 if __name__ == "__main__":
