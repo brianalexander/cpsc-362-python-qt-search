@@ -20,7 +20,7 @@ class SearchWorker(QObject):
 
         nameFilters = ["*.cpp", "*.txt", "*.docx",
                        "*.xlsx", "*.xls", ".ppt", ".pptx", ".pdf"]  # EXCEL
-        iterator = QDirIterator("/", nameFilters,
+        iterator = QDirIterator(os.path.abspath(os.sep), nameFilters,
                                 filters, QDirIterator.Subdirectories)
         while(iterator.hasNext()):
             filePath = iterator.next()
@@ -32,7 +32,10 @@ class SearchWorker(QObject):
                 fileContents = parser.from_file(filePath)
                 if(fileContents['status'] == 200):
                     print("opened", type(filePath))
-                    if(fileContents['content'].find(query) != -1):
+                    found_index = fileContents['content'].find(query)
+                    if(found_index != -1):
+                        snippet = fileContents['content'].strip().replace('\n', ' ').replace('\r', '')
+                        snippet_index = snippet.find(query)
 
                         qtwItem = QTreeWidgetItem()
                         qtwItem.setText(0, fileInfo.fileName())
@@ -43,7 +46,7 @@ class SearchWorker(QObject):
                         qtwItem.setText(
                             4, fileInfo.created().toString("MM/dd/yyyy"))
                         qtwItem.setText(
-                            5, str(fileContents['content'].strip())[0:10])
+                            5, str(snippet)[snippet_index-5:snippet_index+10])
                         qtwItem.setText(6, filePath)
                         self.qtwItems.append(qtwItem)
 

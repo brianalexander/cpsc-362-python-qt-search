@@ -50,11 +50,6 @@ class MainWindow(QMainWindow):
         self.ui.results_search_box.returnPressed.connect(
             self.searchButtonClicked)
 
-        # f = QFile("light-theme.qss")
-        # f.open(QFile.ReadOnly | QFile.Text)
-        # ts = QTextStream(f)
-        # self.lightqss = ts.readAll()
-
         self.ui.toggle_theme_button.clicked.connect(self.toggleTheme)
 
         self.start_search.connect(self.worker.startSearch)
