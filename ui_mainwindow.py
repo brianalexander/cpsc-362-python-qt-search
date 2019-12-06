@@ -43,6 +43,11 @@ class Ui_MainWindow(object):
         self.launch_search_box = QtWidgets.QLineEdit(self.page)
         self.launch_search_box.setObjectName("launch_search_box")
         self.horizontalLayout.addWidget(self.launch_search_box)
+
+        self.launch_directory_button = QtWidgets.QPushButton(self.page)
+        self.launch_directory_button.setObjectName("launch_directory_button")
+        self.horizontalLayout.addWidget(self.launch_directory_button)
+        
         self.launch_search_button = QtWidgets.QPushButton(self.page)
         self.launch_search_button.setObjectName("launch_search_button")
         self.horizontalLayout.addWidget(self.launch_search_button)
@@ -86,6 +91,7 @@ class Ui_MainWindow(object):
         self.launch_logo.setText(_translate("MainWindow", "LOGO PLACEHOLDER"))
 
         self.launch_search_button.setText(_translate("MainWindow", "Search"))
+        self.launch_directory_button.setText(_translate("MainWindow", "Directory"))
         self.results_search_button.setText(_translate("MainWindow", "Searching.."))
         self.results_tree_widget.headerItem().setText(0, _translate("MainWindow", "Name"))
         self.results_tree_widget.headerItem().setText(1, _translate("MainWindow", "Type"))

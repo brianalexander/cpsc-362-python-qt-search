@@ -19,18 +19,18 @@ class SearchWorker(QObject):
         print('stop_search called')
         self.keep_searching = False
 
-    @pyqtSlot(str, name="startSearch")
-    def start_search(self, query):
+    @pyqtSlot(str, str, name="startSearch")
+    def start_search(self, query, search_directory):
         self.keep_searching = True
         print("search started..", query)
         filters = QDir.Files
 
         nameFilters = ["*.cpp", "*.txt", "*.docx",
-                       "*.xlsx", "*.xls", ".ppt", ".pptx", ".pdf"]  # EXCEL
-        iterator = QDirIterator(os.path.abspath(os.sep), nameFilters,
+                       "*.xlsx", "*.xls", ".ppt", ".pptx", ".pdf"]
+
+        iterator = QDirIterator(search_directory, nameFilters,
                                 filters, QDirIterator.Subdirectories)
         while(iterator.hasNext()):
-            # time.sleep(0.1)
             QApplication.processEvents()
             if(self.keep_searching):
                 filePath = iterator.next()
@@ -62,6 +62,4 @@ class SearchWorker(QObject):
                             self.qtwItems.append(qtwItem)
 
                             self.match_found.emit(qtwItem)
-        print('finished')
-
         self.finished.emit()

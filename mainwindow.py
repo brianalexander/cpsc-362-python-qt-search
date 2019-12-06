@@ -3,7 +3,7 @@ from searchworker import SearchWorker
 from ui_mainwindow import Ui_MainWindow
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot, QSize, QTextStream
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox, QFileDialog
 import os
 import resources
 import qdarkstyle
@@ -12,7 +12,7 @@ import sys
 
 class MainWindow(QMainWindow):
 
-    start_search = pyqtSignal(str, name='startSearch')
+    start_search = pyqtSignal(str, str, name='startSearch')
     stop_search = pyqtSignal()
 
     def __init__(self, application_context):
@@ -21,6 +21,8 @@ class MainWindow(QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.search_directory = os.path.abspath(os.sep)
 
         # self.application_context.setStyleSheet(
         #     qdarkstyle.load_stylesheet_pyqt5())
@@ -53,6 +55,8 @@ class MainWindow(QMainWindow):
 
         self.ui.toggle_theme_button.clicked.connect(self.toggleTheme)
 
+        self.ui.launch_directory_button.clicked.connect(self.choose_directory)
+
         self.start_search.connect(self.worker.start_search)
         self.stop_search.connect(self.worker.stop_search)
         self.worker.match_found.connect(self.onMatchFound)
@@ -62,6 +66,16 @@ class MainWindow(QMainWindow):
             self.itemSelected)
 
         self.searching = False
+
+    def choose_directory(self):
+        directory = QFileDialog.getExistingDirectory(
+            self,
+            "Open Directory",
+            os.path.abspath(os.sep),
+            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
+        )
+
+        self.search_directory = directory
 
     def toggleTheme(self):
         if(self.darkTheme == False):
@@ -86,15 +100,15 @@ class MainWindow(QMainWindow):
 
             if(self.ui.stackedWidget.currentIndex() == 1):
                 self.ui.results_tree_widget.clear()
-                self.currentQuery = self.ui.results_search_box.text()
+                self.current_query = self.ui.results_search_box.text()
                 self.ui.results_search_button.setText('Searching..')
             else:
                 self.ui.results_search_box.setText(
                     self.ui.launch_search_box.text())
-                self.currentQuery = self.ui.launch_search_box.text()
+                self.current_query = self.ui.launch_search_box.text()
                 self.ui.stackedWidget.setCurrentIndex(1)
 
-            self.start_search.emit(self.currentQuery)
+            self.start_search.emit(self.current_query, self.search_directory)
 
     @pyqtSlot(QTreeWidgetItem)
     def onMatchFound(self, qtwItem):
@@ -106,7 +120,7 @@ class MainWindow(QMainWindow):
 
         fileContentView = FileContentView()
         fileContentView.openHighlightedDocument(
-            fileContent, self.currentQuery)
+            fileContent, self.current_query)
         self.openedFiles.append(fileContentView)
         fileContentView.show()
 
@@ -116,6 +130,8 @@ class MainWindow(QMainWindow):
         self.searching = False
         if(self.ui.results_tree_widget.topLevelItemCount() == 0):
             QMessageBox.information(self, "Searchy", "No results found.")
+        else:
+            QMessageBox.information(self, "Searchy", "Finished searching!")
 
 
 if __name__ == "__main__":
