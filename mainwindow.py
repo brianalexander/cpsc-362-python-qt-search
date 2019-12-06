@@ -1,9 +1,9 @@
 from filecontentview import FileContentView
 from searchworker import SearchWorker
 from ui_mainwindow import Ui_MainWindow
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtCore import QFile, QThread, pyqtSignal, pyqtSlot, QSize, QTextStream
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox, QFileDialog
+from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor
+from PyQt5.QtCore import Qt, QFile, QThread, pyqtSignal, pyqtSlot, QSize, QTextStream
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidgetItem, QLabel, QMessageBox, QFileDialog, QSplashScreen
 import os
 import resources
 import qdarkstyle
@@ -45,15 +45,17 @@ class MainWindow(QMainWindow):
         self.worker = SearchWorker()
         self.worker.moveToThread(self.worker_thread)
 
-        self.ui.launch_search_button.clicked.connect(self.searchButtonClicked)
+        self.ui.launch_search_button.clicked.connect(
+            self.search_button_clicked)
         self.ui.launch_search_box.returnPressed.connect(
-            self.searchButtonClicked)
+            self.search_button_clicked)
 
-        self.ui.results_search_button.clicked.connect(self.searchButtonClicked)
+        self.ui.results_search_button.clicked.connect(
+            self.search_button_clicked)
         self.ui.results_search_box.returnPressed.connect(
-            self.searchButtonClicked)
+            self.search_button_clicked)
 
-        self.ui.toggle_theme_button.clicked.connect(self.toggleTheme)
+        self.ui.toggle_theme_button.clicked.connect(self.toggle_theme)
 
         self.ui.launch_directory_button.clicked.connect(self.choose_directory)
 
@@ -63,7 +65,7 @@ class MainWindow(QMainWindow):
         self.worker.finished.connect(self.search_finished)
 
         self.ui.results_tree_widget.itemDoubleClicked.connect(
-            self.itemSelected)
+            self.item_selected)
 
         self.searching = False
 
@@ -77,7 +79,7 @@ class MainWindow(QMainWindow):
 
         self.search_directory = directory
 
-    def toggleTheme(self):
+    def toggle_theme(self):
         if(self.dark_theme == False):
             self.application_context.setStyleSheet(
                 qdarkstyle.load_stylesheet_pyqt5())
@@ -88,7 +90,7 @@ class MainWindow(QMainWindow):
             self.ui.toggle_theme_button.setIcon(self.dark_icon)
             self.dark_theme = False
 
-    def searchButtonClicked(self):
+    def search_button_clicked(self):
         if (self.searching == True):
             self.stop_search.emit()
             self.searching = False
@@ -114,7 +116,7 @@ class MainWindow(QMainWindow):
         self.ui.results_tree_widget.addTopLevelItem(qtwItem)
 
     @pyqtSlot(QTreeWidgetItem, int)
-    def itemSelected(self, item, column):
+    def item_selected(self, item, column):
         file_content = parser.from_file(item.text(6))['content'].strip()
 
         file_content_view = FileContentView()
@@ -138,11 +140,25 @@ if __name__ == "__main__":
     from tika import parser
 
     app = QApplication(sys.argv)
+    image = QPixmap(':/assets/images/searchy_logo.png')
+
+    background = QPixmap(image.size())
+    background.fill(QColor("black"))
+
+    painter = QPainter(background)
+    painter.drawPixmap(0,0, image)
+
+
+    splash = QSplashScreen(background)
+    splash.show()
+    # QMessageBox.information(None, "Searchy", "No results found.")
 
     # dummy call to start VM on startup
     parser.from_buffer('')
 
     window = MainWindow(app)
     window.show()
+
+    splash.finish(window)
 
     sys.exit(app.exec_())
