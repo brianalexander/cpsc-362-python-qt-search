@@ -1,69 +1,66 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QFile, QFileInfo, QDir, QDirIterator
-from PyQt5.QtWidgets import QTreeWidgetItem
+from PyQt5.QtWidgets import QTreeWidgetItem, QApplication
+import os
+import time
 
-#.doc OR .docx -> txt
-import docx2txt
-
-#.xlsl -> txt
-import xlrd
-
-def extractTextXL(filePath):
-    arr = []
-    wkbk = xlrd.open_workbook(filePath, on_demand = True)
-    for nsheet in range(wkbk.nsheets):
-        sheet = wkbk.sheet_by_index(nsheet)
-        for row in range(sheet.nrows):
-            for col in range(sheet.ncols):
-                if sheet.cell(row, col).value != xlrd.empty_cell.value:
-                    arr.append(sheet.cell(row, col).value)
-                arr.append("\t")
-            arr.append("\n")
-    fileContents = ""
-    return fileContents.join(arr)
- 
+from tika import parser
 
 
 class SearchWorker(QObject):
-    def __init__(self):
-        super(SearchWorker, self).__init__()
-        self.qtwItems = []
-
     finished = pyqtSignal()
     match_found = pyqtSignal(QTreeWidgetItem, name="matchFound")
 
-    @pyqtSlot(str)
-    def startSearch(self, query):
+    def __init__(self):
+        super(SearchWorker, self).__init__()
+        self.qtw_items = []
+
+    @pyqtSlot(name="stopSearch")
+    def stop_search(self):
+        print('stop_search called')
+        self.keep_searching = False
+
+    @pyqtSlot(str, str, name="startSearch")
+    def start_search(self, query, search_directory):
+        self.keep_searching = True
         print("search started..", query)
         filters = QDir.Files
-        nameFilters = ["*.cpp", "*.txt", "*.doc", "*.docx", "*.xlsx", "*.xls"]
-        iterator = QDirIterator("/Users", nameFilters,
+
+        nameFilters = ["*.cpp", "*.txt", "*.docx",
+                       "*.xlsx", "*.xls", ".ppt", ".pptx", ".pdf"]
+
+        iterator = QDirIterator(search_directory, nameFilters,
                                 filters, QDirIterator.Subdirectories)
         while(iterator.hasNext()):
-            filePath = iterator.next()
-            fileInfo = QFileInfo(filePath)
-            currentFile = QFile(filePath)
-            currentFile.open(QFile.ReadOnly | QFile.Text)
-            fileContents = ""
-            # fileContents = currentFile.readAll().data().decode('utf8', errors='ignore')
-            
-            if(filePath.endswith(".xlsx") | filePath.endswith(".xls")): #XLS or XLSX
-                fileContents = extractTextXL(filePath)
-            elif(filePath.endswith(".cpp") | filePath.endswith(".txt") | filePath.endswith(".h")):    #CPP or H or TXT 
-                fileContents = currentFile.readAll().data().decode('utf8', errors='ignore')
-            elif(filePath.endswith(".doc") | filePath.endswith(".docx")):   #DOC or DOCX
-                fileContents = docx2txt.process(filePath)
-                
-            if(fileContents.find(query) != -1):
-                qtwItem = QTreeWidgetItem()
-                qtwItem.setText(0, fileInfo.fileName())
-                qtwItem.setText(1, fileInfo.suffix())
-                qtwItem.setText(2, str(fileInfo.size()/1024))
-                qtwItem.setText(3, fileInfo.lastModified().toString("MM/dd/yyyy"))
-                qtwItem.setText(4, fileInfo.created().toString("MM/dd/yyyy"))
-                qtwItem.setText(5, str(fileContents[0:50]))
-                qtwItem.setText(6, filePath)
-                self.qtwItems.append(qtwItem)
+            QApplication.processEvents()
+            if(self.keep_searching):
+                file_path = iterator.next()
+                if (os.access(file_path, os.R_OK)):
+                    file_info = QFileInfo(file_path)
+                    file_contents = parser.from_file(file_path)
 
-                self.match_found.emit(qtwItem)
+                    if(file_contents['status'] == 200):
+                        try:
+                                found_index = file_contents['content'].find(query)
+                        except AttributeError:
+                            print("None found...\n")
 
+                        if(found_index != -1):
+                            snippet = file_contents['content'].strip().replace(
+                                '\n', ' ').replace('\r', '')
+                            snippet_index = snippet.find(query)
+
+                            qtw_item = QTreeWidgetItem()
+                            qtw_item.setText(0, file_info.fileName())
+                            qtw_item.setText(1, file_info.suffix())
+                            qtw_item.setText(2, str(file_info.size()/1024))
+                            qtw_item.setText(
+                                3, file_info.lastModified().toString("MM/dd/yyyy"))
+                            qtw_item.setText(
+                                4, file_info.created().toString("MM/dd/yyyy"))
+                            qtw_item.setText(
+                                5, str(snippet)[snippet_index-5:snippet_index+10])
+                            qtw_item.setText(6, file_path)
+                            self.qtw_items.append(qtw_item)
+
+                            self.match_found.emit(qtw_item)
         self.finished.emit()
