@@ -26,24 +26,24 @@ class MainWindow(QMainWindow):
 
         # self.application_context.setStyleSheet(
         #     qdarkstyle.load_stylesheet_pyqt5())
-        self.darkTheme = False
+        self.dark_theme = False
 
-        self.lightIcon = QIcon(':assets/icons/light_button.png')
-        self.darkIcon = QIcon(':assets/icons/dark_button.png')
+        self.light_icon = QIcon(':assets/icons/light_button.png')
+        self.dark_icon = QIcon(':assets/icons/dark_button.png')
 
-        self.ui.toggle_theme_button.setIcon(self.darkIcon)
+        self.ui.toggle_theme_button.setIcon(self.dark_icon)
         self.ui.toggle_theme_button.setIconSize(QSize(32, 32))
 
-        self.openedFiles = []
+        self.opened_files = []
 
         logo = QPixmap(':/assets/images/searchy_logo.png')
         self.ui.launch_logo.setPixmap(logo)
 
-        self.workerThread = QThread()
-        self.workerThread.start()
+        self.worker_thread = QThread()
+        self.worker_thread.start()
 
         self.worker = SearchWorker()
-        self.worker.moveToThread(self.workerThread)
+        self.worker.moveToThread(self.worker_thread)
 
         self.ui.launch_search_button.clicked.connect(self.searchButtonClicked)
         self.ui.launch_search_box.returnPressed.connect(
@@ -59,8 +59,8 @@ class MainWindow(QMainWindow):
 
         self.start_search.connect(self.worker.start_search)
         self.stop_search.connect(self.worker.stop_search)
-        self.worker.match_found.connect(self.onMatchFound)
-        self.worker.finished.connect(self.searchFinished)
+        self.worker.match_found.connect(self.on_match_found)
+        self.worker.finished.connect(self.search_finished)
 
         self.ui.results_tree_widget.itemDoubleClicked.connect(
             self.itemSelected)
@@ -78,19 +78,18 @@ class MainWindow(QMainWindow):
         self.search_directory = directory
 
     def toggleTheme(self):
-        if(self.darkTheme == False):
+        if(self.dark_theme == False):
             self.application_context.setStyleSheet(
                 qdarkstyle.load_stylesheet_pyqt5())
-            self.ui.toggle_theme_button.setIcon(self.lightIcon)
-            self.darkTheme = True
+            self.ui.toggle_theme_button.setIcon(self.light_icon)
+            self.dark_theme = True
         else:
             self.application_context.setStyleSheet("")
-            self.ui.toggle_theme_button.setIcon(self.darkIcon)
-            self.darkTheme = False
+            self.ui.toggle_theme_button.setIcon(self.dark_icon)
+            self.dark_theme = False
 
     def searchButtonClicked(self):
         if (self.searching == True):
-            print('emitting stop_search')
             self.stop_search.emit()
             self.searching = False
             self.ui.results_search_button.setText('Search')
@@ -111,21 +110,21 @@ class MainWindow(QMainWindow):
             self.start_search.emit(self.current_query, self.search_directory)
 
     @pyqtSlot(QTreeWidgetItem)
-    def onMatchFound(self, qtwItem):
+    def on_match_found(self, qtwItem):
         self.ui.results_tree_widget.addTopLevelItem(qtwItem)
 
     @pyqtSlot(QTreeWidgetItem, int)
     def itemSelected(self, item, column):
-        fileContent = parser.from_file(item.text(6))['content'].strip()
+        file_content = parser.from_file(item.text(6))['content'].strip()
 
-        fileContentView = FileContentView()
-        fileContentView.openHighlightedDocument(
-            fileContent, self.current_query)
-        self.openedFiles.append(fileContentView)
-        fileContentView.show()
+        file_content_view = FileContentView()
+        file_content_view.open_highlighted_document(
+            file_content, self.current_query)
+        self.opened_files.append(file_content_view)
+        file_content_view.show()
 
     @pyqtSlot()
-    def searchFinished(self):
+    def search_finished(self):
         self.ui.results_search_button.setText("Search")
         self.searching = False
         if(self.ui.results_tree_widget.topLevelItemCount() == 0):

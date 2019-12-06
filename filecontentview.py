@@ -32,9 +32,9 @@ class FileContentView(QWidget):
         self.ui.setupUi(self)
         self.ui.popup_text_box.setReadOnly(True)
 
-    def openHighlightedDocument(self, fileContent, query):
-        textDocument = QTextDocument()
-        textDocument.setPlainText(fileContent)
-        highlighter = QueryHighlighter(textDocument, query)
+    def open_highlighted_document(self, fileContent, query):
+        text_document = QTextDocument()
+        text_document.setPlainText(fileContent)
+        highlighter = QueryHighlighter(text_document, query)
 
-        self.ui.popup_text_box.setDocument(textDocument)
+        self.ui.popup_text_box.setDocument(text_document)

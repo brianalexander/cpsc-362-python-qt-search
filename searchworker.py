@@ -7,12 +7,12 @@ from tika import parser
 
 
 class SearchWorker(QObject):
-    def __init__(self):
-        super(SearchWorker, self).__init__()
-        self.qtwItems = []
-
     finished = pyqtSignal()
     match_found = pyqtSignal(QTreeWidgetItem, name="matchFound")
+
+    def __init__(self):
+        super(SearchWorker, self).__init__()
+        self.qtw_items = []
 
     @pyqtSlot(name="stopSearch")
     def stop_search(self):
@@ -33,33 +33,30 @@ class SearchWorker(QObject):
         while(iterator.hasNext()):
             QApplication.processEvents()
             if(self.keep_searching):
-                filePath = iterator.next()
-                if (os.access(filePath, os.R_OK)):
-                    fileInfo = QFileInfo(filePath)
+                file_path = iterator.next()
+                if (os.access(file_path, os.R_OK)):
+                    file_info = QFileInfo(file_path)
+                    file_contents = parser.from_file(file_path)
 
-                    # print("opening", filePath)
-
-                    fileContents = parser.from_file(filePath)
-                    if(fileContents['status'] == 200):
-                        # print("opened", type(filePath))
-                        found_index = fileContents['content'].find(query)
+                    if(file_contents['status'] == 200):
+                        found_index = file_contents['content'].find(query)
                         if(found_index != -1):
-                            snippet = fileContents['content'].strip().replace(
+                            snippet = file_contents['content'].strip().replace(
                                 '\n', ' ').replace('\r', '')
                             snippet_index = snippet.find(query)
 
-                            qtwItem = QTreeWidgetItem()
-                            qtwItem.setText(0, fileInfo.fileName())
-                            qtwItem.setText(1, fileInfo.suffix())
-                            qtwItem.setText(2, str(fileInfo.size()/1024))
-                            qtwItem.setText(
-                                3, fileInfo.lastModified().toString("MM/dd/yyyy"))
-                            qtwItem.setText(
-                                4, fileInfo.created().toString("MM/dd/yyyy"))
-                            qtwItem.setText(
+                            qtw_item = QTreeWidgetItem()
+                            qtw_item.setText(0, file_info.fileName())
+                            qtw_item.setText(1, file_info.suffix())
+                            qtw_item.setText(2, str(file_info.size()/1024))
+                            qtw_item.setText(
+                                3, file_info.lastModified().toString("MM/dd/yyyy"))
+                            qtw_item.setText(
+                                4, file_info.created().toString("MM/dd/yyyy"))
+                            qtw_item.setText(
                                 5, str(snippet)[snippet_index-5:snippet_index+10])
-                            qtwItem.setText(6, filePath)
-                            self.qtwItems.append(qtwItem)
+                            qtw_item.setText(6, file_path)
+                            self.qtw_items.append(qtw_item)
 
-                            self.match_found.emit(qtwItem)
+                            self.match_found.emit(qtw_item)
         self.finished.emit()
