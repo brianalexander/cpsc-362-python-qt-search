@@ -38,7 +38,7 @@ class SearchWorker(QObject):
                     file_info = QFileInfo(file_path)
                     file_contents = parser.from_file(file_path)
 
-                    if(file_contents['status'] == 200 and 'content' in file_contents.keys()):
+                    if(file_contents['status'] == 200 and 'content' in file_contents.keys() and file_contents['content'] is not None):
                         found_index = file_contents['content'].find(query)
                         if(found_index != -1):
                             snippet = file_contents['content'].strip().replace(
