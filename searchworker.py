@@ -25,8 +25,10 @@ class SearchWorker(QObject):
         print("search started..", query)
         filters = QDir.Files
 
-        nameFilters = ["*.cpp", "*.txt", "*.docx",
-                       "*.xlsx", "*.xls", ".ppt", ".pptx", ".pdf"]
+        nameFilters = ["*.cpp", "*.txt", "*.pdf",
+                       "*.doc", "*.docx",
+                       "*.xlsx", "*.xls",
+                       "*.ppt", "*.pptx"]
 
         iterator = QDirIterator(search_directory, nameFilters,
                                 filters, QDirIterator.Subdirectories)
