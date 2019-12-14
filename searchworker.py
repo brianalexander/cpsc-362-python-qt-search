@@ -37,8 +37,11 @@ class SearchWorker(QObject):
             if(self.keep_searching):
                 file_path = iterator.next()
                 if (os.access(file_path, os.R_OK)):
-                    file_info = QFileInfo(file_path)
-                    file_contents = parser.from_file(file_path)
+                    try:
+                        file_info = QFileInfo(file_path)
+                        file_contents = parser.from_file(file_path)
+                    except:
+                        continue
 
                     if(file_contents['status'] == 200 and 'content' in file_contents.keys() and file_contents['content'] is not None):
                         found_index = file_contents['content'].find(query)
