@@ -1,4 +1,4 @@
-PyInstaller==3.5
+PyInstaller==3.6
 PyQt5==5.13.1
 QDarkStyle==2.7
 tika==1.19
